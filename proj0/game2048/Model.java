@@ -148,7 +148,6 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
-
         return false;
     }
 
