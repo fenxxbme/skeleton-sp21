@@ -109,10 +109,14 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        board.setViewingPerspective(side);
+
+
+
+
 
         checkGameOver();
         if (changed) {
@@ -138,6 +142,13 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for(int r = 0; r < b.size(); r++){
+            for (int c = 0; c < b.size(); c++){
+                if(b.tile(c, r) == null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -148,6 +159,16 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for(int r = 0; r < b.size(); r++){
+            for(int c = 0; c < b.size(); c++){
+                if(b.tile(c, r) == null){
+                    continue;
+                }
+                if(b.tile(c, r).value() == MAX_PIECE){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +180,30 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        for (int r = 0; r < b.size(); r++) {
+            for (int c = 0; c < b.size(); c++) {
+                if(b.tile(c, r) == null){
+                    return true;
+                }
+            }
+        }
+
+        for (int r = 0; r < b.size(); r++) {
+            for (int c = 0; c < b.size() - 1; c++) {
+                if(b.tile(c, r).value() == b.tile(c + 1, r).value()){
+                    return true;
+                }
+            }
+        }
+
+        for (int c = 0; c < b.size(); c++) {
+            for (int r = 0; r < b.size() - 1; r++) {
+                if(b.tile(c, r).value() == b.tile(c , r + 1).value()){
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
