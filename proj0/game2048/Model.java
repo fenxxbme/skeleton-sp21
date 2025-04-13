@@ -114,8 +114,69 @@ public class Model extends Observable {
         // changed local variable to true.
         board.setViewingPerspective(side);
 
+        boolean is12Merge = false;
+        boolean is13Merge = false;
+        boolean is23Merge = false;
+        boolean is14Merge = false;
+        boolean is24Merge = false;
+        boolean is34Merge = false;
 
+        for(int c = 0; c < board.size(); c++){
 
+            if(board.tile(c, 2) != null) {
+                if(board.tile(c, 3) == null){
+                    board.move(c, 3, board.tile(c, 2));
+                    changed = true;
+                }else {
+                is12Merge = singleMove(board.tile(c, 2), board.tile(c, 3));
+                }
+            }
+
+            if(board.tile(c, 1) != null){
+                if(board.tile(c, 3) == null) {
+                    board.move(c, 3, board.tile(c, 1));
+                    changed = true;
+                }else {
+                    if (board.tile(c, 2) == null) {
+                        if (!is12Merge) {
+                            is13Merge = singleMove(board.tile(c, 1), board.tile(c, 3));
+                        }
+                    } else {
+                        is23Merge = singleMove(board.tile(c, 1), board.tile(c, 2));
+                    }
+                }
+            }
+
+            if(board.tile(c, 0) != null){
+                if(board.tile(c,3) == null){
+                    board.move(c, 3, board.tile(c, 0));
+                    changed = true;
+                }else {
+                    if (board.tile(c, 2) == null) {
+                        if (!is12Merge && !is13Merge) {
+                            is14Merge = singleMove(board.tile(c, 0), board.tile(c, 3));
+                        }
+                    }else {
+                        board.move(c, 2, board.tile(c, 0));
+                        changed = true;
+                    }
+                    if (board.tile(c, 1) != null) {
+                        is34Merge = singleMove(board.tile(c, 0), board.tile(c, 1));
+                    } else {
+                        if (!is23Merge) {
+                            is24Merge = singleMove(board.tile(c, 0), board.tile(c, 2));
+                        }
+                    }
+                }
+            }
+
+            if(is12Merge || is13Merge || is14Merge || is23Merge || is24Merge || is34Merge){
+                changed = true;
+            }
+
+        }
+
+        board.setViewingPerspective(Side.NORTH);
 
 
         checkGameOver();
@@ -123,6 +184,23 @@ public class Model extends Observable {
             setChanged();
         }
         return changed;
+    }
+
+
+    public boolean singleMove(Tile t1, Tile t2){
+        if(t2 != null) {
+            int tcol = t2.col();
+            int trow = t2.row();
+            if (board.move(tcol, trow, t1) == true) {
+                if (t1.value() == t2.value()) {
+                    board.move(tcol, trow, t1);
+                    t2 = null;
+                    score += board.tile(tcol, trow).value();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /** Checks if the game is over and sets the gameOver variable
