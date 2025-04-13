@@ -185,7 +185,6 @@ public class Model extends Observable {
         return changed;
     }
 
-
     public boolean singleMove(Tile t1, Tile t2){
         if(t2 != null) {
             int tcol = t2.col();
